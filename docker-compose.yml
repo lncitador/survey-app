@@ -1,0 +1,33 @@
+version: "3.7"
+
+services:
+  database:
+    image: postgres
+    container_name: database_survey_app
+    restart: always
+    ports: 
+      - 5434:5434
+    environment: 
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=docker
+      - POSTGRES_DB=survey_app
+      - PGPORT=5434
+    volumes: 
+      - pgdata:/data/postgres
+    
+  app:
+    build: .
+    container_name: survey_app
+    ports: 
+      - 3000:3000
+      # - 9229:9229  # sh docker logs name-docker
+    volumes: 
+      - .:/usr/app
+    links:
+      - database
+    depends_on: 
+      - database
+    
+volumes: 
+  pgdata: 
+    driver: local
